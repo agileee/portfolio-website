@@ -45,8 +45,10 @@ def send_email(to_email, subject, html_content):
             "subject": subject,
             "html": html_content,
         },
-        timeout=20,
     )
+
+    print(response.status_code)
+    print(response.text)
 
     response.raise_for_status()
 
@@ -101,23 +103,23 @@ def contact():
             """
         )
 
-        send_email(
-            email,
-            "Got your message — Akhil Girish",
-            f"""
-            <h2>Thanks for reaching out, {name}!</h2>
+        # send_email(
+        #     OWNER_EMAIL,
+        #     "Got your message — Akhil Girish",
+        #     f"""
+        #     <h2>Thanks for reaching out, {name}!</h2>
 
-            <p>I received your message and will get back to you soon.</p>
+        #     <p>I received your message and will get back to you soon.</p>
 
-            <p><strong>Subject:</strong> {subject}</p>
+        #     <p><strong>Subject:</strong> {subject}</p>
 
-            <p>{message}</p>
+        #     <p>{message}</p>
 
-            <br>
+        #     <br>
 
-            <p>Best regards,<br>Akhil Girish</p>
-            """
-        )
+        #     <p>Best regards,<br>Akhil Girish</p>
+        #     """
+        # )
 
         return jsonify({
             "message": "Email sent successfully"
