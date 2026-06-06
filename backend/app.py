@@ -28,8 +28,7 @@ def health():
 @app.route("/api/test")
 def test():
     return {
-        "mail_user": bool(os.getenv("MAIL_USERNAME")),
-        "mail_pass": bool(os.getenv("MAIL_PASSWORD")),
+        "resend_key": bool(RESEND_API_KEY),
         "owner": OWNER_EMAIL
     }
 
@@ -86,49 +85,49 @@ def contact():
         return jsonify({"errors": errors}), 422
 
     try:
-        # Email to owner
-        owner_msg = Message(
-            subject=f"Portfolio Contact: {subject}",
-            recipients=[OWNER_EMAIL],
-            body=f"""New message from your portfolio website:
+        send_email(
+            OWNER_EMAIL,
+            f"Portfolio Contact: {subject}",
+            f"""
+            <h2>New Portfolio Message</h2>
 
-Name: {name}
-Email: {email}
-Subject: {subject}
+            <p><strong>Name:</strong> {name}</p>
+            <p><strong>Email:</strong> {email}</p>
+            <p><strong>Subject:</strong> {subject}</p>
 
-Message:
-{message}
-""",
+            <hr>
+
+            <p>{message}</p>
+            """
         )
-        app.logger.info("About to send owner email")
-        mail.send(owner_msg)
-        app.logger.info("Owner email sent")
 
-        # Confirmation email to sender
-        confirm_msg = Message(
-            subject="Got your message — Akhil Girish",
-            recipients=[email],
-            body=f"""Hi {name},
+        send_email(
+            email,
+            "Got your message — Akhil Girish",
+            f"""
+            <h2>Thanks for reaching out, {name}!</h2>
 
-Thanks for reaching out! I've received your message and will get back to you as soon as possible.
+            <p>I received your message and will get back to you soon.</p>
 
-Here's a copy of what you sent:
+            <p><strong>Subject:</strong> {subject}</p>
 
-Subject: {subject}
-Message: {message}
+            <p>{message}</p>
 
-Best,
-Akhil Girish
-{os.getenv("MAIL_USERNAME")}
-""",
+            <br>
+
+            <p>Best regards,<br>Akhil Girish</p>
+            """
         )
-        mail.send(confirm_msg)
 
-        return jsonify({"message": "Email sent successfully"}), 200
+        return jsonify({
+            "message": "Email sent successfully"
+        }), 200
 
     except Exception as e:
-        app.logger.error(f"Email send error: {e}")
-        return jsonify({"error": "Failed to send email. Please try again later."}), 500
+        app.logger.error(f"Email send error: {str(e)}")
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 
 if __name__ == "__main__":
