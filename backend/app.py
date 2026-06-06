@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_mail import Mail, Message
+import requests
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -10,23 +10,10 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(","))
 
-# Flask-Mail configuration
-app.logger.info("About to send owner email")
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USE_SSL"] = False
-app.config["MAIL_SUPPRESS_SEND"] = False
-app.config["MAIL_ASCII_ATTACHMENTS"] = False
-app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
-app.logger.info("Owner email sent")
 
-app.config["MAIL_TIMEOUT"] = 20
 
-mail = Mail(app)
-
-OWNER_EMAIL = os.getenv("OWNER_EMAIL", os.getenv("MAIL_USERNAME"))
+OWNER_EMAIL = os.getenv("OWNER_EMAIL")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 
 
 def is_valid_email(email: str) -> bool:
@@ -46,16 +33,23 @@ def test():
         "owner": OWNER_EMAIL
     }
 
-@app.route("/api/smtp-test")
-def smtp_test():
-    import socket
+def send_email(to_email, subject, html_content):
+    response = requests.post(
+        "https://api.resend.com/emails",
+        headers={
+            "Authorization": f"Bearer {RESEND_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "from": "Portfolio Contact <onboarding@resend.dev>",
+            "to": [to_email],
+            "subject": subject,
+            "html": html_content,
+        },
+        timeout=20,
+    )
 
-    try:
-        socket.create_connection(("smtp.gmail.com", 587), timeout=10)
-        return {"status": "connected"}
-    except Exception as e:
-        return {"error": str(e)}, 500
-
+    response.raise_for_status()
 
 @app.route("/api/contact", methods=["POST"])
 def contact():
