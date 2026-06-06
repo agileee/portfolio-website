@@ -36,6 +36,14 @@ def is_valid_email(email: str) -> bool:
 def health():
     return jsonify({"status": "ok"}), 200
 
+@app.route("/api/test")
+def test():
+    return {
+        "mail_user": bool(os.getenv("MAIL_USERNAME")),
+        "mail_pass": bool(os.getenv("MAIL_PASSWORD")),
+        "owner": OWNER_EMAIL
+    }
+
 
 @app.route("/api/contact", methods=["POST"])
 def contact():
