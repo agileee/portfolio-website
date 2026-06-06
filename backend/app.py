@@ -46,6 +46,16 @@ def test():
         "owner": OWNER_EMAIL
     }
 
+@app.route("/api/smtp-test")
+def smtp_test():
+    import socket
+
+    try:
+        socket.create_connection(("smtp.gmail.com", 587), timeout=10)
+        return {"status": "connected"}
+    except Exception as e:
+        return {"error": str(e)}, 500
+
 
 @app.route("/api/contact", methods=["POST"])
 def contact():
