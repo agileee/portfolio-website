@@ -11,12 +11,16 @@ app = Flask(__name__)
 CORS(app, origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(","))
 
 # Flask-Mail configuration
+app.logger.info("About to send owner email")
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USE_SSL"] = False
+app.config["MAIL_SUPPRESS_SEND"] = False
+app.config["MAIL_ASCII_ATTACHMENTS"] = False
 app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
 app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
-app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_USERNAME")
+app.logger.info("Owner email sent")
 
 mail = Mail(app)
 
@@ -35,6 +39,10 @@ def health():
 
 @app.route("/api/contact", methods=["POST"])
 def contact():
+    #temporary logging for debugging
+    app.logger.info(f"MAIL_USERNAME: {os.getenv('MAIL_USERNAME')}")
+    app.logger.info(f"OWNER_EMAIL: {OWNER_EMAIL}")
+
     data = request.get_json(silent=True)
 
     if not data:
@@ -78,7 +86,9 @@ Message:
 {message}
 """,
         )
+        app.logger.info("About to send owner email")
         mail.send(owner_msg)
+        app.logger.info("Owner email sent")
 
         # Confirmation email to sender
         confirm_msg = Message(
