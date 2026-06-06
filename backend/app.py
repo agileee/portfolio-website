@@ -22,6 +22,8 @@ app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
 app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
 app.logger.info("Owner email sent")
 
+app.config["MAIL_TIMEOUT"] = 20
+
 mail = Mail(app)
 
 OWNER_EMAIL = os.getenv("OWNER_EMAIL", os.getenv("MAIL_USERNAME"))
