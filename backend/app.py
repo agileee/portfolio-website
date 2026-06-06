@@ -28,8 +28,8 @@ def health():
 @app.route("/api/test")
 def test():
     return {
-        "resend_key": bool(RESEND_API_KEY),
-        "owner": OWNER_EMAIL
+        "resend_key_exists": bool(RESEND_API_KEY),
+        "resend_key_prefix": RESEND_API_KEY[:3] if RESEND_API_KEY else None
     }
 
 def send_email(to_email, subject, html_content):
