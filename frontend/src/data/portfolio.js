@@ -144,7 +144,7 @@ export const education = [
     institution: "Manipal Institute of Technology",
     location: "Bengaluru, India",
     duration: "2023 – 2027",
-    grade: "CGPA: 8.69 / 10",
+    grade: "CGPA: 8.76 / 10",
     current: true,
   },
   {
@@ -196,7 +196,7 @@ export const achievements = [
     category: "Problem Solving",
   },
   {
-    title: "8.69 CGPA at MIT Bengaluru",
+    title: "8.76 CGPA at MIT Bengaluru",
     description: "Maintaining a strong academic record at Manipal Institute of Technology, one of India's top engineering institutions.",
     icon: "graduation",
     category: "Academic",
