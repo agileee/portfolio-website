@@ -105,6 +105,14 @@ export default function Navbar() {
                   {link.label}
                 </button>
               ))}
+              <a
+                href="/resume.pdf"
+                download="Akhil_Resume.pdf"
+                onClick={() => setMenuOpen(false)}
+                className="mt-4 py-3 text-center rounded-lg border border-white/10 text-white/70 hover:text-white hover:border-white/30 transition-all duration-200"
+              >
+                Resume
+              </a>
             </nav>
           </motion.div>
         )}
