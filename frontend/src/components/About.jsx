@@ -4,7 +4,7 @@ import { useScrollAnimation, fadeUpVariants, staggerContainer } from "../hooks/u
 import { personal } from "../data/portfolio";
 
 const stats = [
-  { label: "CGPA", value: "8.69", sub: "MIT Bengaluru" },
+  { label: "CGPA", value: "8.76", sub: "MIT Bengaluru" },
   { label: "DSA Problems", value: "200+", sub: "LeetCode" },
   { label: "UI Components Built", value: "15+", sub: "in production" },
   { label: "APIs Tested", value: "20+", sub: "with Postman" },
